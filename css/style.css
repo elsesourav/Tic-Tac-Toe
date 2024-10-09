@@ -1,0 +1,30 @@
+*,
+*::before,
+*::after {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+
+   user-select: none;
+   -webkit-user-select: none;
+
+   touch-action: none;
+   -ms-touch-action: none;
+
+   /* outline: solid #f00 1px; */
+}
+
+:root {
+   --S: min(90svh, 90svw);
+   --s: min(500px, 90svw);
+   --color-o: #00f;
+   --color-x: linear-gradient(90deg, #d90000 35%, #ff1f1f 50%, #d90000 65%);
+   --color-x-out: #ff0000;
+
+   --win-move-top: 50%;
+}
+
+body {
+   height: 100svh;
+   background: #000;
+}

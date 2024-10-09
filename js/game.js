@@ -1,5 +1,5 @@
 class Game {
-   constructor(elements, fw, resetBtn, winReg = winRegex) {
+   constructor(elements, fw, winReg = winRegex) {
       this.es = elements;
       this.fw = fw;
       this.resetBtn = resetBtn;
@@ -111,10 +111,6 @@ class Game {
             if (this.#isNotContent(e, ["x", "o"]) || !this.start)
                this.#click(e);
          });
-      });
-
-      this.resetBtn.addEventListener("click", () => {
-         this.reset();
       });
    }
 }

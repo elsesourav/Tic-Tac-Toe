@@ -1,0 +1,128 @@
+.searching-window {
+   position: fixed;
+   inset: 0;
+   margin: auto;
+   padding: calc(var(--s) * 0.1);
+   width: calc(var(--s) * 0.8);
+   height: calc(var(--s) * 0.5);
+   background: #fff;
+   border-radius: 10px;
+   outline: solid 1000px #000;
+   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+   display: none;
+   place-items: center;
+   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+   z-index: 3;
+   transition: height 300ms ease-in-out;
+}
+.searching-window.active {
+   display: grid;
+}
+
+.searching-window .search-icon {
+   width: 60px;
+   height: 60px;
+   border-radius: 50%;
+   background: #007bff;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin: 0 auto 20px auto;
+   color: white;
+   font-size: 30px;
+   animation: bounce 2s infinite;
+}
+
+.searching-window h3 {
+   margin-bottom: 0;
+   color: #333;
+   font-size: 20px;
+   animation: pulse 1.5s infinite;
+}
+
+@keyframes bounce {
+   0%,
+   100% {
+      transform: translateY(0);
+   }
+   50% {
+      transform: translateY(-10px);
+   }
+}
+
+@keyframes pulse {
+   0% {
+      opacity: 0.6;
+   }
+   50% {
+      opacity: 1;
+   }
+   100% {
+      opacity: 0.6;
+   }
+}
+
+/* Found players animation */
+.searching-window.found {
+   height: calc(var(--s) * 0.3);
+}
+
+.searching-window.found .search-icon {
+   display: none;
+}
+
+.searching-window.found h3 {
+   display: none;
+}
+
+.searching-window .player-container {
+   position: relative;
+   justify-content: space-between;
+   display: none;
+   align-items: center;
+   gap: 20px;
+}
+.searching-window.found .player-container {
+   display: flex;
+}
+
+.searching-window .player {
+   font-size: 28px;
+   font-weight: bold;
+   background: linear-gradient(90deg, #007bff, #00d4ff);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   animation: slideIn 1s forwards;
+}
+
+.searching-window .vs-text {
+   font-size: 32px;
+   font-weight: bold;
+   color: #ff4d4d;
+   animation: pulseVs 1.5s infinite;
+}
+
+@keyframes slideIn {
+   from {
+      transform: translateY(50px);
+      opacity: 0;
+   }
+   to {
+      transform: translateY(0);
+      opacity: 1;
+   }
+}
+
+@keyframes pulseVs {
+   0%,
+   100% {
+      transform: scale(1);
+      opacity: 1;
+   }
+   50% {
+      transform: scale(1.2);
+      opacity: 0.7;
+   }
+}
+

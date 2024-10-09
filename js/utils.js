@@ -1,15 +1,18 @@
 "use strict";
 
 /* ----  local storage set and get ---- */
-function setDataFromLocalStorage(key, object) {
+function setLocal(key, object) {
   let data = JSON.stringify(object);
   localStorage.setItem(key, data);
 }
 
-function getDataFromLocalStorage(key) {
+function getLocal(key) {
   return JSON.parse(localStorage.getItem(key));
 }
 
+function removeLocal(key) {
+  localStorage.removeItem(key);
+}
 const debounce = (func, delay = 1000) => {
   let debounceTimer;
   return function (...args) {
