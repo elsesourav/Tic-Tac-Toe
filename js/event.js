@@ -1,6 +1,7 @@
 const usernameSubmit = document.getElementById("usernameSubmit");
 const usernameField = document.getElementById("usernameField");
 const usernameForm = document.getElementById("usernameForm");
+const playOnlineBtn = document.getElementById("playOnlineBtn");
 
 usernameSubmit.addEventListener("click", (event) => {
    event.preventDefault();
@@ -9,6 +10,10 @@ usernameSubmit.addEventListener("click", (event) => {
    usernameForm.classList.remove("active");
 });
 
+
+playOnlineBtn.addEventListener("click", () => {
+   
+});
 
 
 // setTimeout(() => {

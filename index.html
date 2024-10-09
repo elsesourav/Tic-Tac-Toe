@@ -12,6 +12,7 @@
       <link rel="stylesheet" href="./css/windows/searching.css" />
       <link rel="stylesheet" href="./css/windows/takeName.css" />
       <link rel="stylesheet" href="./css/windows/winLose.css" />
+      <link rel="stylesheet" href="./css/windows/interface-window.css" />
 
       <script defer src="./js/utils.js"></script>
       <script defer src="./js/global.js"></script>
@@ -21,7 +22,7 @@
    </head>
 
    <body>
-      <main class="">
+      <main class="active">
          <div id="board">
             <span class=""><i></i></span>
             <span class=""><i></i></span>
@@ -63,6 +64,15 @@
             <div class="player" id="player1">Player 1</div>
             <div class="vs-text">VS</div>
             <div class="player" id="player2">Player 2</div>
+         </div>
+      </div>
+
+      <div class="interface-window active" id="">
+         <h1>Tic Tac Toe</h1>
+         <div class="button-container">
+            <button class="game-button" id="playOnlineBtn">Play Online</button>
+            <button class="game-button">Play Offline</button>
+            <button class="game-button">Play With AI</button>
          </div>
       </div>
 

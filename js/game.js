@@ -13,8 +13,11 @@ class Game {
          x: new Sound("a-x"),
          o: new Sound("a-o"),
       };
-      this.reset();
       this.#addEvent();
+   }
+
+   init() {
+      this.reset();
    }
 
    randomTurn() {

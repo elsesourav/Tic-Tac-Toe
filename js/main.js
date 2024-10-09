@@ -4,6 +4,8 @@ const resetBtn = document.getElementById("reset");
 
 const game =  new Game(options, winLoseWindow);
 
+// game.init();
+
 resetBtn.addEventListener("click", () => {
-   this.reset();
+   game.reset();
 });
