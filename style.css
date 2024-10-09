@@ -1,0 +1,269 @@
+*,
+*::before,
+*::after {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+
+   user-select: none;
+   -webkit-user-select: none;
+
+   touch-action: none;
+   -ms-touch-action: none;
+}
+
+:root {
+   --S: min(90svh, 90svw);
+   --color-o: #00f;
+   --color-x: linear-gradient(90deg, #d90000 40%, #ff1f1f 50%, #d90000 60%);
+   --color-x-out: #ff0000;
+}
+
+body {
+   height: 100svh;
+   background: #000;
+}
+main {
+   position: relative;
+   width: 100%;
+   height: 100%;
+   display: grid;
+   place-items: center;
+}
+
+#board {
+   position: relative;
+   width: var(--S);
+   height: var(--S);
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   grid-template-rows: repeat(3, 1fr);
+}
+#board span {
+   --s-o: calc(var(--S) * 0.33 * 0.65);
+   --s-x: calc(var(--S) * 0.33 * 0.7);
+   --border: calc(var(--S) * 0.04);
+   --border-r: 6px;
+   --out: calc(var(--S) * 0.015);
+   position: relative;
+   width: 100%;
+   height: 100%;
+   display: grid;
+   place-items: center;
+}
+#board
+   span:is(:nth-child(1), :nth-child(4), :nth-child(3), :nth-child(6))::before {
+   content: "";
+   position: absolute;
+   width: 100%;
+   height: calc(var(--out) * 2);
+   border-top-left-radius: var(--border-r);
+   border-bottom-left-radius: var(--border-r);
+   bottom: calc(var(--out) * -1);
+   background: #fff;
+}
+#board
+   span:is(:nth-child(1), :nth-child(2), :nth-child(7), :nth-child(8))::after {
+   content: "";
+   position: absolute;
+   width: calc(var(--out) * 2);
+   height: 100%;
+   border-top-left-radius: var(--border-r);
+   border-top-right-radius: var(--border-r);
+   background: #fff;
+   right: calc(var(--out) * -1);
+}
+#board span:is(:nth-child(3), :nth-child(6))::before {
+   border-radius: 0;
+   border-top-right-radius: var(--border-r);
+   border-bottom-right-radius: var(--border-r);
+}
+#board span:is(:nth-child(7), :nth-child(8))::after {
+   border-radius: 0;
+   border-bottom-left-radius: var(--border-r);
+   border-bottom-right-radius: var(--border-r);
+}
+#board span:nth-child(5)::after {
+   content: "";
+   position: absolute;
+   width: calc(100% + var(--out) * 2);
+   height: calc(100% + var(--out) * 2);
+   border: solid calc(var(--out) * 2) #fff;
+}
+#board span:nth-child(2)::before,
+#board span:nth-child(3)::after,
+#board span:nth-child(8)::before,
+#board span:nth-child(9)::after {
+   content: "";
+   position: absolute;
+   width: calc(var(--out) * 4);
+   height: calc(var(--out) * 4);
+   background: #fff;
+   border-radius: 100%;
+   bottom: calc(var(--out) * -2);
+   left: calc(var(--out) * -2);
+   z-index: 2;
+}
+#board span:nth-child(8)::before,
+#board span:nth-child(9)::after  {
+   top: calc(var(--out) * -2);
+}
+#board span i {
+   position: relative;
+   width: 100%;
+   height: 100%;
+   display: grid;
+   place-items: center;
+   opacity: 0;
+   transition: ease-in-out 200ms opacity, 500ms transform 500ms;
+   z-index: 3;
+}
+#board span.o i::before,
+#board span.o i::after {
+   content: "";
+   position: absolute;
+   width: var(--s-o);
+   height: var(--s-o);
+   border-radius: 100%;
+   border: solid calc(var(--border) * 1) var(--color-o);
+   box-shadow: 0 0 10px var(--color-o), inset 0 0 10px var(--color-o);
+}
+#board span.o i::after {
+   border: none;
+   box-shadow: none;
+   opacity: 0.2;
+   background: var(--color-o);
+}
+#board span.x i::before,
+#board span.x i::after {
+   content: "";
+   position: absolute;
+   width: var(--s-x);
+   height: var(--border);
+   border-radius: 7px;
+   background: var(--color-x);
+   box-shadow: 0 0 10px var(--color-x-out);
+   transform: rotate(45deg);
+}
+#board span.x i::after {
+   transform: rotate(-45deg);
+}
+#board span:is(.x, .o) i {
+   opacity: 1;
+}
+#board span:is(.x, .o):not(.h).t i {
+   opacity: 0.4;
+   animation: aniOpacity 1s ease-in-out infinite;
+}
+#board span.h i {
+   opacity: 0.2;
+   transition: none;
+   animation: none;
+}
+#board span.win i {
+   top: -60%;
+   animation: topAni 500ms backwards;
+   animation-delay: 1000ms;
+   z-index: 1000;
+}
+@keyframes topAni {
+   from {
+      top: 0px;
+   }
+}
+#board span.win:nth-child(1) i {
+   transform: translate(100%, 100%);
+}
+#board span.win:nth-child(2) i {
+   transform: translate(0, 100%);
+}
+#board span.win:nth-child(3) i {
+   transform: translate(-100%, 100%);
+}
+#board span.win:nth-child(4) i {
+   transform: translate(100%, 0);
+}
+#board span.win:nth-child(6) i {
+   transform: translate(-100%, 0);
+}
+#board span.win:nth-child(7) i {
+   transform: translate(100%, -100%);
+}
+#board span.win:nth-child(8) i {
+   transform: translate(0, -100%);
+}
+#board span.win:nth-child(9) i {
+   transform: translate(-100%, -100%);
+}
+#board span.hide-pointer {
+   pointer-events: none;
+}
+@keyframes aniOpacity {
+   50% {
+      opacity: 0.6;
+   }
+}
+
+/* ==================================================================
+                        floating windows
+================================================================== */
+#floatingWindow {
+   position: fixed;
+   width: calc(var(--S) * 0.7);
+   height: calc(var(--S) * 0.7);
+   inset: 0;
+   margin: auto;
+   background: rgba(0, 0, 0, 0.9);
+   outline: solid 10000px #0007;
+   backdrop-filter: blur(5px);
+   border-radius: 10px;
+   display: none;
+   outline: solid 1px #fff;
+   grid-template-rows: calc(var(--S) * 0.33) 1fr 1fr;
+   z-index: 3;
+}
+#floatingWindow.active {
+   opacity: 1;
+   display: grid;
+   animation: hideAni 500ms backwards;
+   animation-delay: 900ms;
+}
+@keyframes hideAni {
+   from {
+      opacity: 0;
+   }
+}
+#floatingWindow .icon-box {
+   position: relative;
+   width: 100%;
+   height: 100%;
+}
+#floatingWindow #whoWin {
+   position: relative;
+   width: 100%;
+   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+   font-weight: 900;
+   font-size: calc(var(--S) * 0.1);
+   color: #fff;
+   text-align: center;
+}
+#floatingWindow .cover {
+   position: relative;
+   width: 100%;
+   height: 100%;
+   display: grid;
+   place-items: center;
+}
+#floatingWindow .cover #reset {
+   position: relative;
+   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+   font-weight: 900;
+   font-size: calc(var(--S) * 0.08);
+   outline: none;
+   border: none;
+   padding: calc(var(--S) * 0.01) calc(var(--S) * 0.06);
+   background: #0004ff;
+   box-shadow: 0 3px 5px #000;
+   border-radius: 8px;
+   color: #fff;
+}
