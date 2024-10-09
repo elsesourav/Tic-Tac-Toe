@@ -50,6 +50,7 @@ main {
    height: 100%;
    display: grid;
    place-items: center;
+   cursor: var(--cursor);
 }
 #board
    span:is(:nth-child(1), :nth-child(4), :nth-child(3), :nth-child(6))::before {
@@ -266,4 +267,5 @@ main {
    box-shadow: 0 3px 5px #000;
    border-radius: 8px;
    color: #fff;
+   cursor: var(--cursor);
 }
