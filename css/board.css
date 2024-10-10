@@ -97,6 +97,31 @@ main.active {
    transition: ease-in-out 200ms opacity, 500ms transform 500ms;
    z-index: 3;
 }
+#board span:is(.o, .x) i::before,
+#board span:is(.o, .x) i::after {
+   scale: 1;
+   animation: floatAniX 2s ease-in-out infinite;
+}
+#board span.o i::before,
+#board span.o i::after {
+   animation: floatAniO 2s ease-in-out infinite;
+}
+#board span.o i::before,
+#board span.o i::after {
+   animation-delay: 1s;
+}
+@keyframes floatAniO {
+   50% {
+      scale: 1.02;
+      box-shadow: 0 0 15px var(--color-o), inset 0 0 15px var(--color-o);
+   }
+}
+@keyframes floatAniX {
+   50% {
+      scale: 1.02;
+      box-shadow: 0 0 15px var(--color-x-out);
+   }
+}
 #board span.o i::before,
 #board span.o i::after {
    content: "";
@@ -139,7 +164,7 @@ main.active {
    transition: none;
    animation: none;
 }
-#board span.win i {
+#board span.end i {
    top: calc(var(--win-move-top) * -1);
    animation: topAni 500ms backwards;
    animation-delay: 1000ms;
@@ -150,28 +175,28 @@ main.active {
       top: 0px;
    }
 }
-#board span.win:nth-child(1) i {
+#board span.end:nth-child(1) i {
    transform: translate(100%, 100%);
 }
-#board span.win:nth-child(2) i {
+#board span.end:nth-child(2) i {
    transform: translate(0, 100%);
 }
-#board span.win:nth-child(3) i {
+#board span.end:nth-child(3) i {
    transform: translate(-100%, 100%);
 }
-#board span.win:nth-child(4) i {
+#board span.end:nth-child(4) i {
    transform: translate(100%, 0);
 }
-#board span.win:nth-child(6) i {
+#board span.end:nth-child(6) i {
    transform: translate(-100%, 0);
 }
-#board span.win:nth-child(7) i {
+#board span.end:nth-child(7) i {
    transform: translate(100%, -100%);
 }
-#board span.win:nth-child(8) i {
+#board span.end:nth-child(8) i {
    transform: translate(0, -100%);
 }
-#board span.win:nth-child(9) i {
+#board span.end:nth-child(9) i {
    transform: translate(-100%, -100%);
 }
 #board span.hide-pointer {

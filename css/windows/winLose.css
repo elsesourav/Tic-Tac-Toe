@@ -1,7 +1,7 @@
 .win-lose-window {
    position: fixed;
-   width: calc(var(--S) * 0.7);
-   height: calc(var(--S) * 0.7);
+   width: calc(var(--s) * 0.8);
+   height: min(calc(var(--s) * 0.9), 400px);
    inset: 0;
    margin: auto;
    background: rgba(0, 0, 0, 0.9);
@@ -9,8 +9,10 @@
    border-radius: 10px;
    display: none;
    outline: solid 1px #fff;
+   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
    padding: calc(var(--S) * 0.04);
-   grid-template-rows: calc(var(--S) * 0.33) 1fr 1fr;
+   grid-template-rows: calc(var(--S) * 0.5) auto 1fr;
    z-index: 3;
 }
 .win-lose-window.active {
@@ -29,37 +31,66 @@
    width: 100%;
    height: 100%;
 }
-.win-lose-window #whoWin {
-   position: relative;
-   width: 100%;
-   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-   font-weight: 900;
-   font-size: calc(var(--S) * 0.1);
-   color: #fff;
-   display: grid;
-   place-items: center;
-}
+
 .win-lose-window .cover {
    position: relative;
    width: 100%;
    height: 100%;
-   display: grid;
-   place-items: center;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 20px;
 }
-.win-lose-window .cover #reset {
+.win-lose-window .cover button {
    position: relative;
-   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-   font-weight: 900;
-   font-size: calc(var(--S) * 0.08);
+   font-size: calc(var(--S) * 0.05);
+   letter-spacing: -1px;
+   word-spacing: 4px;
    outline: none;
    border: none;
-   padding: calc(var(--S) * 0.01) calc(var(--S) * 0.06);
-   background: #0004ff;
-   box-shadow: inset -4px -4px 5px #0003a4, inset 4px 4px 4px #2226ff;
+   text-transform: uppercase;
+   font-weight: 900;
+   padding: calc(var(--s) * 0.02) calc(var(--s) * 0.04);
+   background: linear-gradient(135deg, #00c6ffaa, #0072ffaa);
+   box-shadow: inset -3px -3px 2px #0003, inset 3px 3px 3px #fff4,
+      0 3px 5px #000a;
    border-radius: 8px;
    color: #fff;
    cursor: var(--cursor);
+   text-shadow: 0 0 1px #000;
+   overflow: hidden;
+   transition: linear 600ms color;
 }
 
+.win-lose-window.request .cover button:nth-child(1)::before,
+.win-lose-window.response .cover button:nth-child(1)::before {
+   content: "";
+   position: absolute;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+   border-radius: inherit;
+   background: linear-gradient(135deg, #00c6ffaa, #0072ffaa);
+   z-index: -1;
+   animation: timerAni 10s linear forwards;
+}
+.win-lose-window.response .cover button:nth-child(1) {
+   color: #00ff2f;
+}
+.win-lose-window.response .cover button:nth-child(1)::before {
+   animation: none;
+}
+@keyframes timerAni {
+   to {
+      width: 0%;
+   }
+}
+.win-lose-window .cover button:nth-child(2) {
+   background: linear-gradient(135deg, #ffaf7b, #d76d77);
+   padding: calc(var(--s) * 0.02) calc(var(--s) * 0.06);
+}
+.win-lose-window.request .cover button:nth-child(2) {
+   opacity: 0.5;
+   pointer-events: none;
+}

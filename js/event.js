@@ -2,24 +2,33 @@ const usernameSubmit = document.getElementById("usernameSubmit");
 const usernameField = document.getElementById("usernameField");
 const usernameForm = document.getElementById("usernameForm");
 const playOnlineBtn = document.getElementById("playOnlineBtn");
+const playOfflineBtn = document.getElementById("playOfflineBtn");
+const playWithAiBtn = document.getElementById("playWithAiBtn");
+const interfaceWindow = document.getElementById("interfaceWindow");
+const searchingWindow = document.getElementById("searchingWindow");
+const options = document.querySelectorAll("#board span");
+const winLoseWindow = document.getElementById("winLoseWindow");
+const resetBtn = document.getElementById("reset");
+const PLAYER_X = document.getElementById("playerX");
+const PLAYER_O = document.getElementById("playerO");
 
 usernameSubmit.addEventListener("click", (event) => {
    event.preventDefault();
-   const username = usernameField.value;
-   setLocal(USER_NAME_KEY, username);
-   usernameForm.classList.remove("active");
+   const nickName = usernameField.value;
+   setLocal(USER_NAME_KEY, {
+      username: nickName,
+      userRef: nickName.toLowerCase() + Date.now()
+   });
+   window.location.reload();
 });
 
 
 playOnlineBtn.addEventListener("click", () => {
-   
+   interfaceWindow.classList.remove("active");
+   startOnlineGame();
 });
 
-
-// setTimeout(() => {
-//    const searchingWindow = document.getElementById("searchingWindow");
-//    searchingWindow.classList.add("found");
-
-//    document.getElementById("player1").textContent = "John";
-//    document.getElementById("player2").textContent = "Doe";
-// }, 3000);
+playOfflineBtn.addEventListener("click", () => {
+   interfaceWindow.classList.remove("active");
+   startOfflineGame();
+});

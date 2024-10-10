@@ -1,118 +1,262 @@
 class Game {
-   constructor(elements, fw, winReg = winRegex) {
-      this.es = elements;
-      this.fw = fw;
-      this.resetBtn = resetBtn;
-      this.winReg = winReg;
-      this.turn;
-      this.start = false;
-      this.q = new Queue();
-      this.sounds = {
-         win: new Sound("a-win"),
-         lose: new Sound("a-lose"),
-         x: new Sound("a-x"),
-         o: new Sound("a-o"),
-      };
-      this.#addEvent();
+   constructor(cells) {
+      this.cells = cells;
+      this.turn = "x";
+      this.start = true;
+      this.queue = new Queue();
+      this.regex = [
+         [0, 1, 2],
+         [3, 4, 5],
+         [6, 7, 8],
+         [0, 3, 6],
+         [1, 4, 7],
+         [2, 5, 8],
+         [0, 4, 8],
+         [2, 4, 6],
+      ];
+      this.sounds = new Sounds();
    }
 
-   init() {
-      this.reset();
+   resetBoard(turn = this.turn) {
+      this.turn = turn;
+      this.queue.clear();
+      this.start = true;
+      this.cells.forEach((cell) => {
+         cell.classList = [];
+      });
+      this.addFakes();
    }
 
-   randomTurn() {
-      this.turn = Math.random() > 0.5 ? "o" : "x";
+   checkWin(turn = this.turn) {
+      const possibles = [...this.cells].reduce(
+         (a, c, i) => (c.classList.contains(turn) ? a.concat(i) : a),
+         []
+      );
+      return this.regex.some((row) => row.every((e, i) => e === possibles[i]));
    }
 
-   reset() {
-      this.fw.classList.remove("active");
-      this.es.forEach((o) => (o.classList = []));
-      this.q.clear();
-      this.randomTurn();
-      this.#addFakes();
+   checkWinBoth() {
+      if (this.checkWin("x")) return "x";
+      if (this.checkWin("o")) return "o";
+      return null;
    }
 
-   #isNotContent(e, ary = []) {
+   isNotContent(e, ary = []) {
       return ary.every((c) => !e.classList.contains(c));
    }
 
-   #removeOld() {
-      this.es.forEach((e) => {
+   removeOld() {
+      this.cells.forEach((e) => {
          if (e.classList.contains("t")) {
             e.classList = [];
          }
       });
    }
 
-   #addFakes() {
-      this.start = false;
-      this.es.forEach((e) => {
+   addFakes() {
+      this.cells.forEach((e) => {
          e.classList.add(this.turn, "h");
       });
    }
 
-   #removeFakes() {
-      this.start = true;
-      this.es.forEach((e) => (e.classList = []));
+   removeAll() {
+      this.cells.forEach((e) => (e.classList = []));
    }
 
-   #hideLose() {
-      const tempTurn = this.turn == "x" ? "o" : "x";
-      this.es.forEach((e) => {
-         e.classList.add("hide-pointer");
+   disableBoard() {
+      this.cells.forEach((e) => e.classList.add("hide-pointer"));
+   }
+
+   enableBoard() {
+      this.cells.forEach((e) => e.classList.remove("hide-pointer"));
+   }
+
+   endAnimation(turn = this.turn) {
+      this.cells.forEach((e) => {
+         if (e.classList.contains(turn)) {
+            e.classList.add("end");
+         }
+      });
+   }
+
+   hideWhoIsLose(turn = this.turn) {
+      const tempTurn = turn == "x" ? "o" : "x";
+      this.disableBoard();
+      this.cells.forEach((e) => {
          if (e.classList.contains(tempTurn)) {
             e.classList.add("h");
          }
       });
    }
+}
 
-   #winAnimation() {
-      const tempTurn = this.turn;
-      this.es.forEach((e) => {
-         if (e.classList.contains(tempTurn)) {
-            e.classList.add("win");
-         }
-      });
+
+/* --------------------------------------------------------------------------
+                           ONLINE GAME CLASS
+-------------------------------------------------------------------------- */
+class OnlineGame extends Game {
+   constructor(cells) {
+      super(cells);
+      this.gameRef;
+      this.is = false;
+      this.#addEvent();
+      this.resetBoard();
    }
 
-   #checkWin() {
-      const possible = [...this.es]
-         .map((e, i) => {
-            if (e.classList.contains(this.turn)) return i;
-            return null;
-         })
-         .filter((e) => e !== null);
+   enable() {
+      this.is = true;
+   }
 
-      const is = this.winReg.some((row) =>
-         row.every((e, i) => e === possible[i])
-      );
+   disable() {
+      this.is = false;
+   }
+
+   reset(turn, gameRef) {
+      this.gameRef = gameRef;
+      this.opoTurn = turn === "x" ? "o" : "x";
+      this.resetBoard(turn);
+   }
+
+   update(game) {
+      const board = game.board || [];
+      let old;
+      if (!this.start && game.turn === this.turn) this.sounds[this.opoTurn].play();
+
+      if (this.start) {
+         this.start = false;
+         this.removeAll();
+      }
+
+      this.queue.clear();
+
+      for (let i = board.length - 1; i >= 0; i--) {
+         old = this.queue.add(board[i]);
+      }
+      this.queue.get().forEach((e) => {
+         this.cells[e.index].classList.add(e.turn);
+      });
+
+      this.removeOld();
+      this.#isWin();
+
+      if (old) this.cells[old.index].classList.add("t");
+   }
+
+   #isWin() { 
+      const is = this.checkWinBoth();
+      
+      if (is !== null) {
+         const W_L = this.turn === is ? "win" : "lose";
+         console.log(W_L);
+         
+         this.sounds[W_L].play();
+         this.endAnimation(is);
+         this.hideWhoIsLose(is);
+         winLoseWindow.classList.add("active");
+      }
+   }
+
+   async #click(index, e) {
+      if (this.start) {
+         this.start = false;
+         this.removeAll();
+      }
+      const { turn } = this;
+      const board = [...this.queue.get()];
+
+      e.classList.add(turn);
+      this.sounds[turn].play();
+
+      const snapshot = await this.gameRef.get();
+      const gameData = snapshot.val();
+
+      if (gameData.turn === turn) {
+         delete gameData.turn;
+         delete gameData.board;
+         const opoTurn = turn === "x" ? "o" : "x";
+         board.unshift({ index, turn });
+         gameRef.set({ ...gameData, turn: opoTurn, board });
+      }
+
+      this.disable();
+   }
+
+   #addEvent() {
+      this.cells.forEach((e, i) => {
+         e.addEventListener("click", () => {
+            if (this.is && (this.isNotContent(e, ["x", "o"]) || this.start)) {
+               this.#click(i, e);
+            }
+         });
+      });
+   }
+}
+
+
+/* --------------------------------------------------------------------------
+                              OFFLINE GAME CLASS
+-------------------------------------------------------------------------- */
+class OfflineGame extends Game {
+   constructor(cells) {
+      super(cells);
+      this.is = false;
+      this.#addEvent();
+      this.resetBoard();
+   }
+
+   init() {
+      this.reset();
+   }
+
+   enable() {
+      this.is = true;
+   }
+
+   disable() {
+      this.is = false;
+   }
+
+   reset() {
+      this.resetBoard();
+      this.#randomTurn();
+      this.enable();
+   }
+
+   #randomTurn() {
+      this.turn = Math.random() > 0.5 ? "o" : "x";
+   }
+
+   #isWin() {
+      const is = this.checkWin();
 
       if (is) {
          this.sounds.win.play();
-         this.#winAnimation();
-         this.#hideLose();
-         this.fw.classList.add("active");
+         this.endAnimation();
+         this.hideLose();
+         winLoseWindow.classList.add("active");
       }
    }
 
    #click(e) {
-      if (!this.start) this.#removeFakes();
+      if (!this.start) this.removeAll();
 
       this.sounds[this.turn].play();
       e.classList.add(this.turn);
-      this.#removeOld();
-      this.#checkWin();
+      this.removeOld();
+      this.#isWin();
       this.turn = this.turn == "x" ? "o" : "x";
 
-      const old = this.q.add(e);
+      const old = this.queue.add(e);
       if (old) old.classList.add("t");
    }
 
+
    #addEvent() {
-      this.es.forEach((e) => {
+      this.cells.forEach((e, i) => {
          e.addEventListener("click", () => {
-            if (this.#isNotContent(e, ["x", "o"]) || !this.start)
+            if (this.is && (this.isNotContent(e, ["x", "o"]) || !this.start)) {
                this.#click(e);
+            }
          });
       });
    }

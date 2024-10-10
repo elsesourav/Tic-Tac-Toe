@@ -16,7 +16,7 @@
 
 :root {
    --S: min(90svh, 90svw);
-   --s: min(500px, 90svw);
+   --s: min(450px, 100svw);
    --color-o: #00f;
    --color-x: linear-gradient(90deg, #d90000 35%, #ff1f1f 50%, #d90000 65%);
    --color-x-out: #ff0000;
@@ -27,4 +27,24 @@
 body {
    height: 100svh;
    background: #000;
+}
+
+
+nav {
+   position: fixed;
+   bottom: 0;
+   right: 0;
+   z-index: 100;
+}
+nav pre {
+   background-color: #000;
+}
+nav pre::before {
+   inset-block-start: -150% !important;
+   inset-inline-start: -150% !important;
+}
+nav pre .text {
+   padding: 5px;
+   font-size: calc(var(--S) * 0.03) !important;
+   text-shadow: 0 0 0.01em var(--background-color), 0 0 0.3em var(--text-color) !important;
 }

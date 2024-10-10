@@ -9,16 +9,21 @@
       <link rel="shortcut icon" type="image/png" href="./src/img/icon.png" />
       <link rel="stylesheet" href="./css/style.css" />
       <link rel="stylesheet" href="./css/board.css" />
+      <link rel="stylesheet" href="./css/neonText.css" />
       <link rel="stylesheet" href="./css/windows/searching.css" />
       <link rel="stylesheet" href="./css/windows/takeName.css" />
       <link rel="stylesheet" href="./css/windows/winLose.css" />
       <link rel="stylesheet" href="./css/windows/interface-window.css" />
 
+      <!-- <script src="https://www.gstatic.com/firebasejs/8.6.0/firebase-app.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.6.0/firebase-database.js"></script> -->
       <script defer src="./js/utils.js"></script>
       <script defer src="./js/global.js"></script>
+      <script defer src="./js/sound.js"></script>
+      <script defer src="./js/event.js"></script>
       <script defer src="./js/game.js"></script>
       <script defer src="./js/main.js"></script>
-      <script defer src="./js/event.js"></script>
+      <script defer src="./js/db.js"></script>
    </head>
 
    <body>
@@ -38,9 +43,12 @@
 
       <div class="win-lose-window" id="winLoseWindow" class="">
          <div class="icon-box"></div>
-         <div id="whoWin">Win!</div>
+         <div class="text-effect-wrapper" id="winMessage">
+            <span class="text">Sourav's Win!</span>
+         </div>
          <div class="cover">
-            <button id="reset">RESET</button>
+            <button id="reset">Play Again</button>
+            <button id="">EXIT</button>
          </div>
       </div>
 
@@ -61,24 +69,33 @@
          <div class="search-icon">🔍</div>
          <h3>Searching for Player...</h3>
          <div class="player-container">
-            <div class="player" id="player1">Player 1</div>
+            <div class="player" id="playerX">Player X</div>
             <div class="vs-text">VS</div>
-            <div class="player" id="player2">Player 2</div>
+            <div class="player" id="playerO">Player O</div>
          </div>
       </div>
 
-      <div class="interface-window active" id="">
-         <h1>Tic Tac Toe</h1>
+      <div class="interface-window active" id="interfaceWindow">
+         <div class="text-effect-wrapper">
+            <span class="text">Tic Tac Toe</span>
+         </div>
          <div class="button-container">
             <button class="game-button" id="playOnlineBtn">Play Online</button>
-            <button class="game-button">Play Offline</button>
-            <button class="game-button">Play With AI</button>
+            <button class="game-button" id="playOfflineBtn">Play Offline</button>
+            <button class="game-button" id="playWithAiBtn">Play With AI</button>
          </div>
       </div>
 
-      <audio id="a-win" src="./audios/wow.mp3" preload="auto"></audio>
-      <audio id="a-lose" src="./audios/aww.mp3" preload="auto"></audio>
-      <audio id="a-o" src="./audios/o.mp3" preload="auto"></audio>
-      <audio id="a-x" src="./audios/x.mp3" preload="auto"></audio>
+      <audio id="a-win" src="./src/audios/wow.mp3" preload="auto"></audio>
+      <audio id="a-lose" src="./src/audios/aww.mp3" preload="auto"></audio>
+      <audio id="a-o" src="./src/audios/o.mp3" preload="auto"></audio>
+      <audio id="a-x" src="./src/audios/x.mp3" preload="auto"></audio>
+
+      <nav>
+         <pre
+            class="text-effect-wrapper t">
+            <span class="text">&copy; Sourav Barui 2024</span>
+         </pre>
+      </nav>
    </body>
 </html>

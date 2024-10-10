@@ -1,11 +1,12 @@
-const options = document.querySelectorAll("#board span");
-const winLoseWindow = document.getElementById("winLoseWindow");
-const resetBtn = document.getElementById("reset");
 
-const game =  new Game(options, winLoseWindow);
 
-// game.init();
+const onlineGame = new OnlineGame(options);
+const offlineGame = new OfflineGame(options);
 
 resetBtn.addEventListener("click", () => {
    game.reset();
 });
+
+function startOfflineGame() {
+   
+}
