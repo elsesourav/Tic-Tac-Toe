@@ -63,6 +63,10 @@ class Game {
       this.cells.forEach((e) => (e.classList = []));
    }
 
+   static removeAll(cells) {
+      cells.forEach((e) => (e.classList = []));
+   }
+
    disableBoard() {
       this.cells.forEach((e) => e.classList.add("hide-pointer"));
    }
@@ -89,7 +93,6 @@ class Game {
       });
    }
 }
-
 
 /* --------------------------------------------------------------------------
                            ONLINE GAME CLASS
@@ -120,7 +123,8 @@ class OnlineGame extends Game {
    update(game) {
       const board = game.board || [];
       let old;
-      if (!this.start && game.turn === this.turn) this.sounds[this.opoTurn].play();
+      if (!this.start && game.turn === this.turn)
+         this.sounds[this.opoTurn].play();
 
       if (this.start) {
          this.start = false;
@@ -142,13 +146,13 @@ class OnlineGame extends Game {
       if (old) this.cells[old.index].classList.add("t");
    }
 
-   #isWin() { 
+   #isWin() {
       const is = this.checkWinBoth();
-      
+
       if (is !== null) {
          const W_L = this.turn === is ? "win" : "lose";
          console.log(W_L);
-         
+
          this.sounds[W_L].play();
          this.endAnimation(is);
          this.hideWhoIsLose(is);
@@ -192,7 +196,6 @@ class OnlineGame extends Game {
    }
 }
 
-
 /* --------------------------------------------------------------------------
                               OFFLINE GAME CLASS
 -------------------------------------------------------------------------- */
@@ -205,6 +208,9 @@ class OfflineGame extends Game {
    }
 
    init() {
+      this.wineStrike = { x: 0, o: 0 };
+      this.totalWin = { x: 0, o: 0 };
+      this.#randomTurn();
       this.reset();
    }
 
@@ -217,13 +223,22 @@ class OfflineGame extends Game {
    }
 
    reset() {
-      this.resetBoard();
-      this.#randomTurn();
       this.enable();
+      this.resetBoard();
+      switchPlayer(this.turn);
+      updateWinStatus(this.totalWin, this.wineStrike);
    }
 
    #randomTurn() {
       this.turn = Math.random() > 0.5 ? "o" : "x";
+   }
+
+   #updateWinStatus() {
+      setupWinLoseStatus(this.turn);
+      this.totalWin[this.turn] += 1;
+      this.wineStrike[this.turn] += 1;
+      this.wineStrike[this.turn === "x" ? "o" : "x"] = 0;
+      updateWinStatus(this.totalWin, this.wineStrike);
    }
 
    #isWin() {
@@ -232,29 +247,32 @@ class OfflineGame extends Game {
       if (is) {
          this.sounds.win.play();
          this.endAnimation();
-         this.hideLose();
-         winLoseWindow.classList.add("active");
+         this.hideWhoIsLose();
+         this.#updateWinStatus();
       }
    }
 
    #click(e) {
-      if (!this.start) this.removeAll();
+      if (this.start) {
+         this.start = false;
+         this.removeAll();
+      }
 
       this.sounds[this.turn].play();
       e.classList.add(this.turn);
       this.removeOld();
       this.#isWin();
       this.turn = this.turn == "x" ? "o" : "x";
+      switchPlayer(this.turn);
 
       const old = this.queue.add(e);
       if (old) old.classList.add("t");
    }
 
-
    #addEvent() {
-      this.cells.forEach((e, i) => {
+      this.cells.forEach((e) => {
          e.addEventListener("click", () => {
-            if (this.is && (this.isNotContent(e, ["x", "o"]) || !this.start)) {
+            if (this.is && (this.isNotContent(e, ["x", "o"]) || this.start)) {
                this.#click(e);
             }
          });

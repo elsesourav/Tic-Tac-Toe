@@ -10,7 +10,7 @@ const firebaseConfig = {
    measurementId: "G-2DBG26YHTW"
 };
 
-let nickName, username;
+let nickName, username, currentGameMode;
 
 // initialize
 (() => {

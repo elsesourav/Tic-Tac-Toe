@@ -4,6 +4,8 @@ const db = firebase.database();
 let gameRef;
 
 async function startOnlineGame() {
+   currentGameMode = "online";
+   offlineGame.disable();
    const gamesRef = db.ref("games");
    searchingWindow.classList.add("active");
    

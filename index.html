@@ -27,6 +27,19 @@
    </head>
 
    <body>
+      <header class="">
+         <section>
+            <div class="name" id="nameX">Player X</div>
+            <div class="total-win" id="totalWinX">👑 1</div>
+            <div class="win-strike" id="winStrikeX">🏅 2</div>
+         </section>
+         <section>
+            <div class="win-strike" id="winStrikeO">🏅 0</div>
+            <div class="total-win" id="totalWinO">👑 3</div>
+            <div class="name" id="nameO">Player O</div>
+         </section>
+      </header>
+
       <main class="active">
          <div id="board">
             <span class=""><i></i></span>
@@ -44,11 +57,11 @@
       <div class="win-lose-window" id="winLoseWindow" class="">
          <div class="icon-box"></div>
          <div class="text-effect-wrapper" id="winMessage">
-            <span class="text">Sourav's Win!</span>
+            <span class="text" id="winnerName">Sourav's Win!</span>
          </div>
          <div class="cover">
-            <button id="reset">Play Again</button>
-            <button id="">EXIT</button>
+            <button id="resetBtn">Play Again</button>
+            <button id="exitBtn">EXIT</button>
          </div>
       </div>
 
