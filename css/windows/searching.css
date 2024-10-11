@@ -2,8 +2,8 @@
    position: fixed;
    inset: 0;
    margin: auto;
-   padding: calc(var(--s) * 0.1);
-   width: calc(var(--s) * 0.8);
+   padding: calc(var(--s) * 0.04);
+   width: calc(var(--s) * 0.9);
    height: calc(var(--s) * 0.5);
    background: #fff;
    border-radius: 10px;
@@ -27,7 +27,7 @@
    display: flex;
    justify-content: center;
    align-items: center;
-   margin: 0 auto 20px auto;
+   margin: calc(var(--s) * 0.06) 0;
    color: white;
    font-size: 30px;
    animation: bounce 2s infinite;
@@ -37,6 +37,7 @@
    margin-bottom: 0;
    color: #333;
    font-size: 20px;
+   margin-bottom: auto;
    animation: pulse 1.5s infinite;
 }
 
@@ -65,6 +66,7 @@
 /* Found players animation */
 .searching-window.found {
    height: calc(var(--s) * 0.3);
+   padding: calc(var(--s) * 0.08) calc(var(--s) * 0.04);
 }
 
 .searching-window.found .search-icon {
@@ -77,22 +79,34 @@
 
 .searching-window .player-container {
    position: relative;
-   justify-content: space-between;
+   width: 100%;
    display: none;
-   align-items: center;
-   gap: 20px;
+   place-items: center;
+   grid-template-columns: 4fr 1fr 4fr;
+   gap: calc(var(--s) * 0.03);
 }
 .searching-window.found .player-container {
-   display: flex;
+   display: grid;
 }
 
 .searching-window .player {
+   position: relative;
    font-size: 28px;
-   font-weight: bold;
+   width: auto;
+   max-width: 100%;
+   font-family: "Lato", sans-serif;
+   font-weight: 900;
+   text-align: right;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
    background: linear-gradient(90deg, #007bff, #00d4ff);
    -webkit-background-clip: text;
    -webkit-text-fill-color: transparent;
    animation: slideIn 1s forwards;
+}
+.searching-window .player:last-child {
+   text-align: left;
 }
 
 .searching-window .vs-text {

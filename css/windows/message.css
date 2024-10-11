@@ -1,0 +1,79 @@
+.message-window {
+   position: fixed;
+   inset: 0;
+   width: 100%;
+   height: 100%;
+   background: rgba(0, 0, 0, 0.8);
+   display: none;
+   justify-content: center;
+   align-items: center;
+   z-index: 100;
+   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.message-window.active {
+   display: flex;
+}
+.message-window .box {
+   position: relative;
+   background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+   width: calc(var(--s) * 0.8);
+   height: min(calc(var(--s) * 0.9), 400px);
+   padding: 30px;
+   border-radius: 10px;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   gap: 20px;
+   align-items: center;
+   color: #fff;
+   border: 2px solid #fff;
+}
+.message-window .box .exit-button {
+   position: absolute;
+   top: 10px;
+   right: 15px;
+   background: transparent;
+   border: none;
+   font-size: calc(var(--s) * 0.08);
+   color: #ff7e5f;
+   cursor: var(--cursor);
+   transition: color 0.3s ease;
+}
+
+body.pc .message-window .box .exit-button:hover,
+.message-window .box .exit-button:active {
+   color: #ff4e50;
+}
+.message-window .box .title {
+   font-size: calc(var(--s) * 0.07);
+   margin-bottom: 20px;
+   text-align: center;
+   color: #000;
+   text-shadow: 0 1px #fff;
+   font-weight: bold;
+}
+.message-window .box .text {
+   font-size: 18px;
+   margin-bottom: 30px;
+   color: #222;
+   text-shadow: 1px 1px #fff;
+}
+.message-window .box .button {
+   padding: 15px 30px;
+   font-size: 18px;
+   border: none;
+   color: #fff;
+   border-radius: 10px;
+   cursor: var(--cursor);
+   transition: all 0.3s ease;
+   background-color: #ff6a95;
+   box-shadow: 0 8px 15px #ff698780, inset 3px 3px 2px #fff2, inset -3px -3px 2px #0003;
+   font-weight: bold;
+}
+
+body.pc .message-window .box .button:hover,
+.message-window .box .button:active {
+   background-color: #ff9068;
+   box-shadow: 0 12px 20px #ff6987cc, inset 3px 3px 2px #fff2, inset -3px -3px 2px #0003;
+   transform: translateY(-3px);
+}

@@ -2,12 +2,13 @@ const onlineGame = new OnlineGame(options);
 const offlineGame = new OfflineGame(options);
 
 resetBtn.addEventListener("click", () => {
-   winLoseWindow.classList.remove("active");
+   sendRequested = false;
    switch (currentGameMode) {
       case "online":
-         onlineGame.reset();
+         sendRequestForPlayAgain();
          break;
       case "offline":
+         winLoseWindow.classList.remove("active");
          offlineGame.reset();
          break;
    }
@@ -23,10 +24,8 @@ exitBtn.addEventListener("click", () => {
 
    switch (currentGameMode) {
       case "online":
-         
          break;
       case "offline":
-         
          break;
    }
 });
@@ -39,7 +38,7 @@ function startOfflineGame() {
 
 function setupWinLoseStatus(name) {
    winLoseWindow.classList.add("active");
-   winnerName.innerText = `${name.toUpperCase()}'s Win!`;
+   winnerName.innerText = `${name === true ? "you are" : name + "'s"} Win!`;
 }
 
 function switchPlayer(turn) {
@@ -51,4 +50,11 @@ function updateWinStatus(total, strike) {
    totalWinO.innerText = `👑 ${total.o}`;
    winStrikeX.innerText = `🏅 ${strike.x}`;
    winStrikeO.innerText = `🏅 ${strike.o}`;
+}
+
+function setupPlayerNames(nameX = "Player X", nameO = "Player O") {
+   PLAYER_X.textContent = nameX;
+   PLAYER_O.textContent = nameO;
+   NAME_X.textContent = nameX;
+   NAME_O.textContent = nameO;
 }

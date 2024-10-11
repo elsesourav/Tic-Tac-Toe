@@ -108,8 +108,8 @@ header section .name {
    height: 90%;
    border-radius: 6px;
    background: #0002;
-   white-space: nowrap;
    outline: solid 1px #0004;
+   white-space: nowrap;
    overflow: hidden;
    text-overflow: ellipsis;
 }

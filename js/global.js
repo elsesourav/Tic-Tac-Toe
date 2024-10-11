@@ -11,6 +11,7 @@ const firebaseConfig = {
 };
 
 let nickName, username, currentGameMode;
+let sendRequested = false;
 
 // initialize
 (() => {

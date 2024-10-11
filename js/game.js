@@ -102,6 +102,7 @@ class OnlineGame extends Game {
       super(cells);
       this.gameRef;
       this.is = false;
+      this.g;
       this.#addEvent();
       this.resetBoard();
    }
@@ -114,13 +115,16 @@ class OnlineGame extends Game {
 
    enable() {
       this.is = true;
+      this.cells.forEach((cell) => cell.classList.remove("hide-pointer"));
    }
 
    disable() {
       this.is = false;
+      this.cells.forEach((cell) => cell.classList.add("hide-pointer"));
    }
 
-   reset(turn, gameRef, turnG) {
+   reset(turn = this.turn, gameRef = this.gameRef, turnG = this.turnG) {
+      updateWinStatus(this.totalWin, this.wineStrike);
       switchPlayer(turnG || turn);
       this.gameRef = gameRef;
       this.opoTurn = turn === "x" ? "o" : "x";
@@ -129,6 +133,7 @@ class OnlineGame extends Game {
 
    update(game) {
       const board = game.board || [];
+      this.g = game;
       let old;
       if (!this.start && game.turn === this.turn)
          this.sounds[this.opoTurn].play();
@@ -153,8 +158,9 @@ class OnlineGame extends Game {
       if (old) this.cells[old.index].classList.add("t");
    }
 
-   #updateWinStatus(turn) {
-      setupWinLoseStatus(turn);
+   #updateWinDetails(turn) {
+      const user = turn === this.turn || this.g[`name${turn.toUpperCase()}`];
+      setupWinLoseStatus(user);
       this.totalWin[turn] += 1;
       this.wineStrike[turn] += 1;
       this.wineStrike[turn === "x" ? "o" : "x"] = 0;
@@ -171,7 +177,7 @@ class OnlineGame extends Game {
          this.sounds[W_L].play();
          this.endAnimation(is);
          this.hideWhoIsLose(is);
-         this.#updateWinStatus(is);
+         this.#updateWinDetails(is);
          winLoseWindow.classList.add("active");
       }
       return is;
@@ -191,13 +197,14 @@ class OnlineGame extends Game {
       const snapshot = await this.gameRef.get();
       const gameData = snapshot.val();
 
-      if (gameData.turn === turn) {
-         delete gameData.turn;
-         delete gameData.board;
-         const opoTurn = turn === "x" ? "o" : "x";
-         board.unshift({ index, turn });
-         gameRef.set({ ...gameData, turn: opoTurn, board });
-      }
+      const opoTurn = turn === "x" ? "o" : "x";
+      const is = this.checkWin() || null;
+      delete gameData.turn;
+      delete gameData.board;
+      if (gameData.playAgainRequest) delete gameData.playAgainRequest;
+
+      board.unshift({ index, turn });
+      gameRef.set({ ...gameData, turn: opoTurn, board });
 
       this.disable();
    }
@@ -227,8 +234,7 @@ class OfflineGame extends Game {
    init() {
       this.wineStrike = { x: 0, o: 0 };
       this.totalWin = { x: 0, o: 0 };
-      NAME_X.textContent = `Player X`;
-      NAME_O.textContent = `Player O`;
+      setupPlayerNames();
       this.#randomTurn();
       this.reset();
    }
@@ -252,7 +258,7 @@ class OfflineGame extends Game {
       this.turn = Math.random() > 0.5 ? "o" : "x";
    }
 
-   #updateWinStatus() {
+   #updateWinDetails() {
       setupWinLoseStatus(this.turn);
       this.totalWin[this.turn] += 1;
       this.wineStrike[this.turn] += 1;
@@ -267,7 +273,7 @@ class OfflineGame extends Game {
          this.sounds.win.play();
          this.endAnimation();
          this.hideWhoIsLose();
-         this.#updateWinStatus();
+         this.#updateWinDetails();
       }
       return is;
    }

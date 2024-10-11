@@ -8,7 +8,7 @@ async function startOnlineGame() {
    offlineGame.disable();
    const gamesRef = db.ref("games");
    searchingWindow.classList.add("active");
-   
+
    let foundRoom = false;
    const snapGames = await gamesRef.get();
 
@@ -25,6 +25,7 @@ async function startOnlineGame() {
                   playerX: true,
                   board: [],
                   turn: "x",
+                  playAgainRequest: null,
                   nameX: nickName,
                });
                gameRef.child("playerX").onDisconnect().set(false);
@@ -59,8 +60,7 @@ function createNewRoom() {
       playerO: false,
       nameX: nickName,
       turn: "x",
-      isActive: true,
-      timestamp: Date.now(),
+      playAgainRequest: null,
    });
    gameRef.child("playerX").onDisconnect().set(false);
    goLive("x");
@@ -76,13 +76,10 @@ function goLive(turn) {
       if (gameData.playerX && gameData.playerO) {
          if (first) {
             searchingWindow.classList.add("found");
-            PLAYER_X.textContent = gameData.nameX;
-            PLAYER_O.textContent = gameData.nameO;
-            NAME_X.textContent = gameData.nameX;
-            NAME_O.textContent = gameData.nameO;
+            setupPlayerNames(gameData.nameX, gameData.nameO);
 
             await wait(3000);
-            searchingWindow.classList = [];
+            searchingWindow.classList.remove("active", "found");
             first = false;
          }
 
@@ -90,9 +87,63 @@ function goLive(turn) {
             onlineGame.enable();
          }
 
-         if (gameData.board) onlineGame.update(gameData);
+         if (gameData.board && !gameData.playAgainRequest) {
+            onlineGame.update(gameData);
+         }
+
+         // play again request handle
+         if (gameData.playAgainRequest === "send") {
+            console.log("send request");
+
+            winLoseWindow.classList.remove("request");
+            await wait(100);
+            winLoseWindow.classList.add("request");
+         }
+         if (gameData.playAgainRequest === "accepted") {
+            console.log("accepted request");
+
+            searchingWindow.classList.add("active", "found");
+            winLoseWindow.classList.remove("active", "request");
+            onlineGame.reset();
+            
+            await wait(3000);
+            searchingWindow.classList.remove("active", "found");
+         }
+      } else if (!first) {
       }
    });
+}
+
+function canAccepted(snapshot, time = 10500) {
+   const data = snapshot.val();
+
+   return (
+      snapshot.exists() &&
+      data.playAgainRequest === "send" &&
+      Date.now() - data.sendTime < time
+   );
+}
+
+async function sendRequestForPlayAgain() {
+   if (sendRequested) return;
+   sendRequested = true;
+   const snapshot = await gameRef.get();
+
+   const is = canAccepted(snapshot);
+
+   if (is) {
+      console.log("accepted");
+      await gameRef.update({
+         playAgainRequest: "accepted",
+         board: null,
+         sendTime: null,
+      });
+   } else {
+      console.log("send");
+
+      gameRef.update({ playAgainRequest: "send", sendTime: Date.now() });
+   }
+   setTimeout(() => (sendRequested = false), 11000);
 }
 
 // function makeMove(index) {

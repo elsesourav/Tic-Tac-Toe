@@ -30,7 +30,11 @@ const isMobile =
    navigator.maxTouchPoints > 0 ||
    navigator.msMaxTouchPoints > 0;
 
-if (!isMobile) rootStyle.setProperty("--cursor", "pointer");
+if (!isMobile) {
+   rootStyle.setProperty("--cursor", "pointer");
+   document.body.classList.add("pc");
+}
+
 
 /**
  * @param {number} ms

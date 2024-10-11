@@ -53,7 +53,8 @@
    transition: background-color 0.3s;
 }
 
-.username-window button:hover {
+body.pc .username-window button:hover,
+.username-window button:active {
    background-color: #0056b3;
 }
 

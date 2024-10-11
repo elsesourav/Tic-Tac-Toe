@@ -43,7 +43,7 @@
    }
 }
 
-.text {
+.text-effect-wrapper .text {
    --background-color: black;
    --text-color: white;
 

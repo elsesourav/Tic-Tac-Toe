@@ -57,13 +57,17 @@
    padding: calc(var(--s) * 0.02) calc(var(--s) * 0.04);
    background: linear-gradient(135deg, #00c6ffaa, #0072ffaa);
    box-shadow: inset -3px -3px 2px #0003, inset 3px 3px 3px #fff4,
-      0 3px 5px #000a;
+      0 3px 5px #000;
    border-radius: 8px;
    color: #fff;
    cursor: var(--cursor);
    text-shadow: 0 0 1px #000;
    overflow: hidden;
-   transition: linear 600ms color;
+   transition: linear 600ms color, transform 200ms;
+}
+body.pc .win-lose-window .cover button:hover,
+.win-lose-window .cover button:active {
+      transform: translateY(-2px);
 }
 
 .win-lose-window.request .cover button:nth-child(1)::before,
