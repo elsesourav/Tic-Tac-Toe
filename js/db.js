@@ -25,7 +25,7 @@ async function startOnlineGame() {
                   playerX: true,
                   board: [],
                   turn: "x",
-                  XName: nickName,
+                  nameX: nickName,
                });
                gameRef.child("playerX").onDisconnect().set(false);
                foundRoom = true;
@@ -35,7 +35,7 @@ async function startOnlineGame() {
                gameRef = db.ref("games/" + gameId);
                gameRef.update({
                   playerO: true,
-                  OName: nickName,
+                  nameO: nickName,
                });
                gameRef.child("playerO").onDisconnect().set(false);
                foundRoom = true;
@@ -57,7 +57,7 @@ function createNewRoom() {
    gameRef.set({
       playerX: true,
       playerO: false,
-      XName: nickName,
+      nameX: nickName,
       turn: "x",
       isActive: true,
       timestamp: Date.now(),
@@ -68,7 +68,7 @@ function createNewRoom() {
 
 function goLive(turn) {
    let first = true;
-   onlineGame.reset(turn, gameRef);
+   onlineGame.init(turn, gameRef, "x");
 
    gameRef.on("value", async (snapshot) => {
       const gameData = snapshot.val();
@@ -76,8 +76,10 @@ function goLive(turn) {
       if (gameData.playerX && gameData.playerO) {
          if (first) {
             searchingWindow.classList.add("found");
-            PLAYER_X.textContent = gameData.XName;
-            PLAYER_O.textContent = gameData.OName;
+            PLAYER_X.textContent = gameData.nameX;
+            PLAYER_O.textContent = gameData.nameO;
+            NAME_X.textContent = gameData.nameX;
+            NAME_O.textContent = gameData.nameO;
 
             await wait(3000);
             searchingWindow.classList = [];

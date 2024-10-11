@@ -106,6 +106,12 @@ class OnlineGame extends Game {
       this.resetBoard();
    }
 
+   init(turn, gameRef, turnG) {
+      this.wineStrike = { x: 0, o: 0 };
+      this.totalWin = { x: 0, o: 0 };
+      this.reset(turn, gameRef, turnG);
+   }
+
    enable() {
       this.is = true;
    }
@@ -114,7 +120,8 @@ class OnlineGame extends Game {
       this.is = false;
    }
 
-   reset(turn, gameRef) {
+   reset(turn, gameRef, turnG) {
+      switchPlayer(turnG || turn);
       this.gameRef = gameRef;
       this.opoTurn = turn === "x" ? "o" : "x";
       this.resetBoard(turn);
@@ -141,9 +148,17 @@ class OnlineGame extends Game {
       });
 
       this.removeOld();
-      this.#isWin();
-
+      const is = this.#isWin();
+      !is && switchPlayer(game.turn);
       if (old) this.cells[old.index].classList.add("t");
+   }
+
+   #updateWinStatus(turn) {
+      setupWinLoseStatus(turn);
+      this.totalWin[turn] += 1;
+      this.wineStrike[turn] += 1;
+      this.wineStrike[turn === "x" ? "o" : "x"] = 0;
+      updateWinStatus(this.totalWin, this.wineStrike);
    }
 
    #isWin() {
@@ -156,8 +171,10 @@ class OnlineGame extends Game {
          this.sounds[W_L].play();
          this.endAnimation(is);
          this.hideWhoIsLose(is);
+         this.#updateWinStatus(is);
          winLoseWindow.classList.add("active");
       }
+      return is;
    }
 
    async #click(index, e) {
@@ -210,6 +227,8 @@ class OfflineGame extends Game {
    init() {
       this.wineStrike = { x: 0, o: 0 };
       this.totalWin = { x: 0, o: 0 };
+      NAME_X.textContent = `Player X`;
+      NAME_O.textContent = `Player O`;
       this.#randomTurn();
       this.reset();
    }
@@ -250,6 +269,7 @@ class OfflineGame extends Game {
          this.hideWhoIsLose();
          this.#updateWinStatus();
       }
+      return is;
    }
 
    #click(e) {
@@ -261,9 +281,9 @@ class OfflineGame extends Game {
       this.sounds[this.turn].play();
       e.classList.add(this.turn);
       this.removeOld();
-      this.#isWin();
+      const is = this.#isWin();
       this.turn = this.turn == "x" ? "o" : "x";
-      switchPlayer(this.turn);
+      !is && switchPlayer(this.turn);
 
       const old = this.queue.add(e);
       if (old) old.classList.add("t");
