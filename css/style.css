@@ -37,20 +37,19 @@ header {
    height: calc(var(--s) * 0.15);
    z-index: 2;
    display: none;
+   gap: calc(var(--s) * 0.07);
    justify-content: center;
    align-items: center;
-   gap: calc(var(--s) * 0.07);
-   grid-template-columns: 1fr 1fr;
 }
 header.active {
    display: flex;
 }
 header section {
    position: relative;
-   display: grid;
    width: calc(var(--s) * 0.4);
    height: 70%;
    grid-template-columns: calc(var(--s) * 0.16) 1fr 1fr;
+   display: grid;
    place-items: center;
    padding: 3px;
    border-radius: 7px;
@@ -58,7 +57,7 @@ header section {
    background: #035bff71;
    overflow: hidden;
 }
-header section:last-child {
+header section:nth-child(2) {
    grid-template-columns: 1fr 1fr calc(var(--s) * 0.16);
 }
 header section::before {
@@ -77,14 +76,14 @@ header section:nth-child(2):before {
    left: 0;
    right: auto;
 }
-header.x section:nth-child(1):before,
+header.x section:first-child:before,
 header.o section:nth-child(2):before {
    width: 100%;
    height: 100%;
    border-radius: 0;
 }
 header.o section:nth-child(2):before,
-header.x section:nth-child(1):before {
+header.x section:first-child:before {
    width: 100%;
    height: 100%;
    border-radius: 0;
@@ -114,7 +113,7 @@ header section .name {
    text-overflow: ellipsis;
 }
 header section:first-child .total-win::before,
-header section:last-child .win-strike::before {
+header section:nth-child(2) .win-strike::before {
    content: "";
    position: absolute;
    width: 3px;
@@ -124,8 +123,23 @@ header section:last-child .win-strike::before {
    background: #006ad3;
 }
 header.o section:first-child .total-win::before,
-header.x section:last-child .win-strike::before {
+header.x section:nth-child(2) .win-strike::before {
    background: #0069d35b;
+}
+
+header .home {
+   position: fixed;
+   bottom: calc(var(--s) * 0.02);
+   left: calc(var(--s) * 0.03);
+   font-size: calc(var(--s) * 0.07);
+   transition: 200ms transform;
+   cursor: var(--cursor);
+}
+body:has( .win-lose-window.active) .home {
+   display: none;
+}
+body.pc header .home:hover {
+   transform: scale(1.05) translateY(-2px);
 }
 nav {
    position: fixed;

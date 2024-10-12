@@ -93,23 +93,35 @@ function goLive(turn) {
 
          // play again request handle
          if (gameData.playAgainRequest === "send") {
-            console.log("send request");
-
             winLoseWindow.classList.remove("request");
+            winLoseWindow.classList.remove("me");
             await wait(100);
+            const isMe = gameData.whoRequest === onlineGame.turn;
             winLoseWindow.classList.add("request");
+            isMe && winLoseWindow.classList.add("me");
          }
-         if (gameData.playAgainRequest === "accepted") {
-            console.log("accepted request");
 
+         if (gameData.playAgainRequest === "accepted") {
             searchingWindow.classList.add("active", "found");
             winLoseWindow.classList.remove("active", "request");
-            onlineGame.reset();
-            
+            onlineGame.reset(onlineGame.turn, gameRef, gameData.turn);
+            alreadyRequested = false;
+
             await wait(3000);
             searchingWindow.classList.remove("active", "found");
          }
       } else if (!first) {
+         const isAnyOneWin = onlineGame.checkWinBoth();
+         const whoIsOff = gameData.playerX ? gameData.nameX : gameData.nameO;
+
+         if (isAnyOneWin) {
+            winLoseWindow.classList.remove("request");
+            winLoseWindow.classList.add("leave");
+            leaveTheGame();
+         } else if (whoIsOff === nickName) {
+            messageWindow.classList.add("active");
+            leaveTheGame();
+         }
       }
    });
 }
@@ -125,53 +137,28 @@ function canAccepted(snapshot, time = 10500) {
 }
 
 async function sendRequestForPlayAgain() {
-   if (sendRequested) return;
-   sendRequested = true;
+   if (alreadyRequested) return;
+   alreadyRequested = true;
    const snapshot = await gameRef.get();
-
    const is = canAccepted(snapshot);
 
    if (is) {
-      console.log("accepted");
       await gameRef.update({
          playAgainRequest: "accepted",
          board: null,
          sendTime: null,
       });
    } else {
-      console.log("send");
-
-      gameRef.update({ playAgainRequest: "send", sendTime: Date.now() });
+      gameRef.update({
+         playAgainRequest: "send",
+         whoRequest: onlineGame.turn,
+         sendTime: Date.now(),
+      });
    }
-   setTimeout(() => (sendRequested = false), 11000);
+   setTimeout(() => (alreadyRequested = false), 11000);
 }
 
-// function makeMove(index) {
-//    gameRef.once("value", (snapshot) => {
-//       const gameData = snapshot.val();
-//       if (gameData.turn === player && !gameData.board[index]) {
-//          gameData.board[index] = player;
-//          gameData.turn = player === "x" ? "o" : "x";
-//          gameRef.update({ board: gameData.board, turn: gameData.turn });
-//          checkWin(gameData.board);
-//       }
-//    });
-// }
-
-// Update the board UI based on the game state
-// function updateBoard(board) {
-//    const cells = document.querySelectorAll(".cell");
-//    board.forEach((value, index) => {
-//       cells[index].textContent = value;
-//    });
-// }
-
-// Check if there is a winner or if it's a draw
-
-// Reset the game after a win or draw
-function resetGame() {
-   gameRef.update({
-      board: Array(9).fill(null),
-      turn: "x",
-   });
+async function leaveTheGame() {
+   await gameRef.child(`player${onlineGame.turn.toUpperCase()}`).set(false);
+   await gameRef.off();
 }

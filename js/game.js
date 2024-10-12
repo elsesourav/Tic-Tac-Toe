@@ -17,19 +17,22 @@ class Game {
       this.sounds = new Sounds();
    }
 
-   resetBoard(turn = this.turn) {
+   resetBoard(turn = this.turn, noFake = false) {
       this.turn = turn;
       this.queue.clear();
       this.start = true;
       this.cells.forEach((cell) => {
          cell.classList = [];
       });
-      this.addFakes();
+      if (!noFake) this.addFakes();
    }
 
    checkWin(turn = this.turn) {
       const possibles = [...this.cells].reduce(
-         (a, c, i) => (c.classList.contains(turn) ? a.concat(i) : a),
+         (a, c, i) =>
+            c.classList.contains(turn) && !c.classList.contains("h")
+               ? a.concat(i)
+               : a,
          []
       );
       return this.regex.some((row) => row.every((e, i) => e === possibles[i]));
@@ -104,7 +107,6 @@ class OnlineGame extends Game {
       this.is = false;
       this.g;
       this.#addEvent();
-      this.resetBoard();
    }
 
    init(turn, gameRef, turnG) {
@@ -123,12 +125,12 @@ class OnlineGame extends Game {
       this.cells.forEach((cell) => cell.classList.add("hide-pointer"));
    }
 
-   reset(turn = this.turn, gameRef = this.gameRef, turnG = this.turnG) {
+   reset(turn = this.turn, gameRef = this.gameRef, turnG) {
       updateWinStatus(this.totalWin, this.wineStrike);
       switchPlayer(turnG || turn);
       this.gameRef = gameRef;
       this.opoTurn = turn === "x" ? "o" : "x";
-      this.resetBoard(turn);
+      this.resetBoard(turn, this.turn !== turnG);
    }
 
    update(game) {
@@ -198,10 +200,11 @@ class OnlineGame extends Game {
       const gameData = snapshot.val();
 
       const opoTurn = turn === "x" ? "o" : "x";
-      const is = this.checkWin() || null;
+      this.checkWin() || null;
       delete gameData.turn;
       delete gameData.board;
       if (gameData.playAgainRequest) delete gameData.playAgainRequest;
+      if (gameData.whoRequest) delete gameData.whoRequest;
 
       board.unshift({ index, turn });
       gameRef.set({ ...gameData, turn: opoTurn, board });
@@ -228,7 +231,6 @@ class OfflineGame extends Game {
       super(cells);
       this.is = false;
       this.#addEvent();
-      this.resetBoard();
    }
 
    init() {

@@ -2,7 +2,6 @@ const onlineGame = new OnlineGame(options);
 const offlineGame = new OfflineGame(options);
 
 resetBtn.addEventListener("click", () => {
-   sendRequested = false;
    switch (currentGameMode) {
       case "online":
          sendRequestForPlayAgain();
@@ -14,16 +13,21 @@ resetBtn.addEventListener("click", () => {
    }
 });
 
-exitBtn.addEventListener("click", () => {
+function exitSetup() {
    winLoseWindow.classList.remove("active");
-   interfaceWindow.classList.add("active");
    headerElement.classList.remove("active");
+   interfaceWindow.classList.add("active");
    onlineGame.disable();
    offlineGame.disable();
    Game.removeAll(options);
+}
+
+exitBtn.addEventListener("click", () => {
+   exitSetup();
 
    switch (currentGameMode) {
       case "online":
+         leaveTheGame();
          break;
       case "offline":
          break;

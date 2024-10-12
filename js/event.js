@@ -20,6 +20,14 @@ const totalWinX = document.getElementById("totalWinX");
 const totalWinO = document.getElementById("totalWinO");
 const winStrikeX = document.getElementById("winStrikeX");
 const winStrikeO = document.getElementById("winStrikeO");
+const closeSearch = document.getElementById("closeSearch");
+const exitRunningGame = document.getElementById("exitRunningGame");
+const exitTheMatchAlert = document.getElementById("exitTheMatchAlert");
+const exitGameNo = document.getElementById("exitGameNo");
+const exitGameYes = document.getElementById("exitGameYes");
+const messageWindow = document.getElementById("messageWindow");
+const messageExitBtn = document.getElementById("messageExitBtn");
+const newGameBtn = document.getElementById("newGameBtn");
 
 
 usernameSubmit.addEventListener("click", (event) => {
@@ -32,15 +40,55 @@ usernameSubmit.addEventListener("click", (event) => {
    window.location.reload();
 });
 
+function initialSetupBeforeStart() {
+   interfaceWindow.classList.remove("active");
+   winLoseWindow.classList.remove("leave");
+   headerElement.classList.add("active");
+}
 
 playOnlineBtn.addEventListener("click", () => {
-   interfaceWindow.classList.remove("active");
-   headerElement.classList.add("active");
+   initialSetupBeforeStart();
    startOnlineGame();
 });
 
 playOfflineBtn.addEventListener("click", () => {
-   interfaceWindow.classList.remove("active");
-   headerElement.classList.add("active");
+   initialSetupBeforeStart();
    startOfflineGame();
+});
+
+playWithAiBtn.addEventListener("click", () => {
+
+});
+
+closeSearch.addEventListener("click", () => {
+   leaveTheGame();
+   interfaceWindow.classList.add("active");
+   searchingWindow.classList.remove("active");
+   headerElement.classList.remove("active");
+});
+
+exitRunningGame.addEventListener("click", () => {
+   exitTheMatchAlert.classList.add("active");
+});
+
+exitGameNo.addEventListener("click", () => {
+   exitTheMatchAlert.classList.remove("active");
+});
+
+exitGameYes.addEventListener("click", () => {
+   exitTheMatchAlert.classList.remove("active");
+   leaveTheGame();
+   exitSetup();
+});
+
+messageExitBtn.addEventListener("click", () => {
+   messageWindow.classList.remove("active");
+   exitSetup();
+});
+
+newGameBtn.addEventListener("click", () => {
+   messageWindow.classList.remove("active");
+   exitSetup();
+   initialSetupBeforeStart();
+   startOnlineGame();
 });

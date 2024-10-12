@@ -17,7 +17,7 @@
    position: relative;
    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
    width: calc(var(--s) * 0.8);
-   height: min(calc(var(--s) * 0.9), 400px);
+   height: min(calc(var(--s) * 0.8), 400px);
    padding: 30px;
    border-radius: 10px;
    display: flex;

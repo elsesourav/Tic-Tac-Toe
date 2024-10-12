@@ -63,15 +63,29 @@
    cursor: var(--cursor);
    text-shadow: 0 0 1px #000;
    overflow: hidden;
-   transition: linear 600ms color, transform 200ms;
+   transition: linear transform 200ms;
+}
+.win-lose-window.request.me .cover button:first-child {
+   opacity: 0.6;
+   animation: opacityAniR 10s linear forwards;
+}
+.win-lose-window.leave .cover button:first-child {
+   opacity: 0.2;
+   cursor: no-drop;
+}
+@keyframes opacityAniR {
+   to {
+      opacity: 1;
+   }
 }
 body.pc .win-lose-window .cover button:hover,
 .win-lose-window .cover button:active {
-      transform: translateY(-2px);
+   box-shadow: inset -3px -3px 2px #0003, inset 3px 3px 3px #fff4,
+      0 3px 5px #000;
+   transform: translateY(-2px);
 }
 
-.win-lose-window.request .cover button:nth-child(1)::before,
-.win-lose-window.response .cover button:nth-child(1)::before {
+.win-lose-window.request .cover button:first-child:before {
    content: "";
    position: absolute;
    left: 0;
@@ -81,24 +95,15 @@ body.pc .win-lose-window .cover button:hover,
    border-radius: inherit;
    background: linear-gradient(135deg, #00c6ffaa, #0072ffaa);
    z-index: -1;
-   animation: timerAni 10s linear forwards;
-}
-.win-lose-window.response .cover button:nth-child(1) {
-   color: #00ff2f;
-}
-.win-lose-window.response .cover button:nth-child(1)::before {
-   animation: none;
+   animation: timerAni 10s linear backwards;
 }
 @keyframes timerAni {
    to {
       width: 0%;
    }
 }
-.win-lose-window .cover button:nth-child(2) {
+
+.win-lose-window .cover button:last-child {
    background: linear-gradient(135deg, #ffaf7b, #d76d77);
    padding: calc(var(--s) * 0.02) calc(var(--s) * 0.06);
-}
-.win-lose-window.request .cover button:nth-child(2) {
-   opacity: 0.5;
-   pointer-events: none;
 }

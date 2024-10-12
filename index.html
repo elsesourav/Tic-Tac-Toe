@@ -15,6 +15,7 @@
       <link rel="stylesheet" href="./css/windows/winLose.css" />
       <link rel="stylesheet" href="./css/windows/interface.css" />
       <link rel="stylesheet" href="./css/windows/message.css" />
+      <link rel="stylesheet" href="./css/windows/exitMatch.css" />
 
       <script src="https://www.gstatic.com/firebasejs/8.6.0/firebase-app.js"></script>
       <script src="https://www.gstatic.com/firebasejs/8.6.0/firebase-database.js"></script>
@@ -28,6 +29,7 @@
    </head>
 
    <body>
+
       <header class="">
          <section>
             <div class="name" id="nameX">Player X</div>
@@ -39,6 +41,7 @@
             <div class="total-win" id="totalWinO">👑 3</div>
             <div class="name" id="nameO">Player O</div>
          </section>
+         <span class="home" id="exitRunningGame">🏠</span>
       </header>
 
       <main class="active">
@@ -80,6 +83,7 @@
       </div>
 
       <div class="searching-window" id="searchingWindow">
+         <div class="close" id="closeSearch">✖</div>
          <div class="search-icon">🔍</div>
          <h3>Searching for Player...</h3>
          <div class="player-container">
@@ -104,13 +108,23 @@
 
       <div class="message-window" id="messageWindow">
          <div class="box">
-            <button class="exit-button" id="exitBtn">✖</button>
+            <button class="exit-button" id="messageExitBtn">✖</button>
             <h2 class="title">Opponent Left the Match</h2>
             <p class="text">
                It seems like your opponent has left the game. Want to start a
                new match?
             </p>
             <button class="button" id="newGameBtn">Start New Game</button>
+         </div>
+      </div>
+
+      <div class="exit-the-match-alert" id="exitTheMatchAlert">
+         <div class="box">
+            <p class="title">Exit the Game!</p>
+            <div class="buttons">
+               <button id="exitGameNo">NO</button>
+               <button id="exitGameYes">YES</button>
+            </div>
          </div>
       </div>
 
