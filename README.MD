@@ -26,6 +26,25 @@ Welcome to the Tic Tac Toe game! This project is a web-based implementation of t
 - **Sound Effects**: 
   - Audio feedback for game events.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td>
+      <h4>Main menu with play options.</h4>
+      <img src="./src/img/interface.png">
+    </td>
+    <td>
+      <h4>Searching for an online player.</h4>
+      <img src="./src/img/search.png">
+    </td>
+    <td>
+      <h4>Gameplay interface.</h4>
+      <img src="./src/img/play.png">
+    </td>
+  </tr>
+</table>
+
 ## Installation
 
 1. **Open with URL**: You can play the game directly by visiting [https://elsesourav.github.io/Tic-Tac-Toe/](https://elsesourav.github.io/Tic-Tac-Toe/).
@@ -93,3 +112,11 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+
+For questions or feedback, please contact me
+-  [Email](https://elsesourav@gmail.com)
+-  [Twitter](https://twitter.com/elsesourav)
+-  [Linkedin](https://linkedin.com/in/elsesourav)
+-  [Facebook](https://fb.com/elsesourav)
+-  [Instagram](https://instagram.com/elsesourav)
