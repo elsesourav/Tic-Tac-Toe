@@ -47,6 +47,7 @@ class Queue {
    constructor(size = 5) {
       this.size = size;
       this.q = [];
+      this.olds = [];
    }
 
    set(newQueue) {
@@ -59,13 +60,35 @@ class Queue {
 
    clear() {
       this.q = [];
+      this.olds = [];
    }
 
    add(e) {
       this.q.unshift(e);
       if (this.q.length > this.size) {
-         return this.q.pop();
+         const old = this.q.pop();
+         this.olds.push(old);
+         return old;
       }
       return null;
+   }
+
+   isFull() {
+      return this.q.length === this.size;
+   }
+
+   copy() {
+      const q = new Queue();
+      q.set([...this.q]);
+      q.olds = [...this.olds];
+      return q
+   }
+
+   restore() {
+      if (this.olds.length > 0 && this.isFull()) {
+         const old = this.olds.pop();
+         this.q.push(old);
+         return this.q.shift();
+      }
    }
 }

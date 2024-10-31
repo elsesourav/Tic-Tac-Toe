@@ -6,6 +6,7 @@ let gameRef;
 async function startOnlineGame() {
    currentGameMode = "online";
    offlineGame.disable();
+   aiGame.disable();
    const gamesRef = db.ref("games");
    searchingWindow.classList.add("active");
 

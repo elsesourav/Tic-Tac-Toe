@@ -155,7 +155,8 @@ main.active {
 #board span:is(.x, .o) i {
    opacity: 1;
 }
-#board span:is(.x, .o):not(.h).t i {
+#board span:is(.x, .o):not(.h).t i,
+#board span:is(.x, .o):not(.h).f i {
    opacity: 0.4;
    animation: aniOpacity 1s ease-in-out infinite;
 }

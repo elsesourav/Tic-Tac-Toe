@@ -4,6 +4,7 @@ const usernameForm = document.getElementById("usernameForm");
 const playOnlineBtn = document.getElementById("playOnlineBtn");
 const playOfflineBtn = document.getElementById("playOfflineBtn");
 const playWithAiBtn = document.getElementById("playWithAiBtn");
+const gameModesBtn = document.querySelectorAll("#playWithAiBtn .game-type");
 const interfaceWindow = document.getElementById("interfaceWindow");
 const searchingWindow = document.getElementById("searchingWindow");
 const options = document.querySelectorAll("#board span");
@@ -56,9 +57,18 @@ playOfflineBtn.addEventListener("click", () => {
    startOfflineGame();
 });
 
-playWithAiBtn.addEventListener("click", () => {
-
+let difficulty = "easy";
+gameModesBtn.forEach(btn => {
+   btn.addEventListener("click", () => {
+      difficulty = btn.getAttribute("name");
+   });   
 });
+
+playWithAiBtn.addEventListener("click", () => {
+   initialSetupBeforeStart();
+   startAiGame(difficulty);
+});
+
 
 closeSearch.addEventListener("click", () => {
    leaveTheGame();

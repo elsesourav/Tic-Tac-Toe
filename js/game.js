@@ -1,6 +1,6 @@
 class Game {
    constructor(cells) {
-      this.cells = cells;
+      this.cells = [...cells];
       this.turn = "x";
       this.start = true;
       this.queue = new Queue();
@@ -17,24 +17,36 @@ class Game {
       this.sounds = new Sounds();
    }
 
-   resetBoard(turn = this.turn, noFake = false) {
+   resetBoard(turn = this.turn, fake = true) {
       this.turn = turn;
       this.queue.clear();
       this.start = true;
       this.cells.forEach((cell) => {
          cell.classList = [];
       });
-      if (!noFake) this.addFakes();
+      if (fake) this.addFakes();
    }
 
-   checkWin(turn = this.turn) {
-      const possibles = [...this.cells].reduce(
+   getPossibleIndex(turn = this.turn, board = this.cells) {
+      return board.reduce(
          (a, c, i) =>
             c.classList.contains(turn) && !c.classList.contains("h")
                ? a.concat(i)
                : a,
          []
       );
+   }
+
+   getUnusedIndex(board = this.cells) {
+      return board.reduce(
+         (a, c, i) =>
+            this.isNotContent(c, ["x", "o"]) || this.start ? a.concat(i) : a,
+         []
+      );
+   }
+
+   checkWin(turn = this.turn, board) {
+      const possibles = this.getPossibleIndex(turn, board);
       return this.regex.some((row) => row.every((e, i) => e === possibles[i]));
    }
 
@@ -130,7 +142,7 @@ class OnlineGame extends Game {
       switchPlayer(turnG || turn);
       this.gameRef = gameRef;
       this.opoTurn = turn === "x" ? "o" : "x";
-      this.resetBoard(turn, this.turn !== turnG);
+      this.resetBoard(turn, this.turn === turnG);
    }
 
    update(game) {
@@ -174,7 +186,6 @@ class OnlineGame extends Game {
 
       if (is !== null) {
          const W_L = this.turn === is ? "win" : "lose";
-         console.log(W_L);
 
          this.sounds[W_L].play();
          this.endAnimation(is);
@@ -302,6 +313,146 @@ class OfflineGame extends Game {
          e.addEventListener("click", () => {
             if (this.is && (this.isNotContent(e, ["x", "o"]) || this.start)) {
                this.#click(e);
+            }
+         });
+      });
+   }
+}
+
+/* --------------------------------------------------------------------------
+                              AI GAME CLASS
+-------------------------------------------------------------------------- */
+class AiGame extends Game {
+   constructor(cells) {
+      super(cells);
+      this.is = false;
+      this.difficulty = "easy";
+      this.aiMove = new AiMove();
+      this.win = false;
+      this.#addEvent();
+   }
+
+   init(difficulty = this.difficulty) {
+      this.difficulty = difficulty;
+      this.wineStrike = { x: 0, o: 0 };
+      this.totalWin = { x: 0, o: 0 };
+      setupPlayerNames();
+      this.#randomTurn();
+      this.reset();
+   }
+
+   enable() {
+      this.is = true;
+   }
+
+   disable() {
+      this.is = false;
+   }
+
+   async reset(difficulty = this.difficulty) {
+      this.difficulty = difficulty;
+      const isAiX = this.turns.ai === "x";
+      setupPlayerNames(
+         isAiX ? `AI (<small>${this.difficulty}</small>)` : "YOU",
+         isAiX ? "YOU" : `AI (<small>${this.difficulty}</small>)`,
+         true
+      );
+      this.resetBoard(this.turns.current, false);
+      switchPlayer(this.turns.current);
+      updateWinStatus(this.totalWin, this.wineStrike);
+      this.win = false;
+      this.disable();
+
+      if (this.turns.current === this.turns.ai) {
+         await wait(1000);
+         this.#aiTurn();
+         this.enable();
+      } else {
+         this.enable();
+         this.addFakes();
+      }
+   }
+
+   #randomTurn() {
+      const ai = Math.random() > 0.5 ? "o" : "x";
+      const player = ai === "x" ? "o" : "x";
+      const current = Math.random() > 0.5 ? "o" : "x";
+      this.turns = { ai, player, current };
+   }
+
+   #updateWinDetails() {
+      const isAiX = this.turns.ai === "x";
+      const name = isAiX ? "YOU are Win!" : "AI Wins!";
+      setupWinLoseStatus(name, true);
+      this.totalWin[this.turns.current] += 1;   
+      this.wineStrike[this.turns.current] += 1;
+      this.wineStrike[this.turns.current === "x" ? "o" : "x"] = 0;
+      updateWinStatus(this.totalWin, this.wineStrike);
+   }
+
+   #isWin() {
+      const is = this.checkWinBoth();
+
+      if (is) {
+         this.win = true;
+         this.sounds[this.turns.current === this.turns.player ? "win" : "lose"].play();
+         this.endAnimation(this.turns.current);
+         this.hideWhoIsLose(this.turns.current);
+         this.#updateWinDetails();
+      }
+      return is;
+   }
+
+   #aiTurn() {
+      if (!this.win) {
+         switch (this.difficulty) {
+            case "easy":
+               this.#move(this.aiMove.easy(this.cells));
+               break;
+            case "normal":
+               this.#move(this.aiMove.normal(this.cells, this.turns.ai));
+               break;
+            case "hard":
+               this.#move(this.aiMove.hard(this.cells, this.turns.ai));
+               break;
+         }
+      }
+   }
+
+   #move(index) {
+      if (!this.win) {
+         const e = this.cells[index];
+
+         if (this.start) {
+            this.start = false;
+            this.removeAll();
+         }
+
+         this.sounds[this.turns.current].play();
+         e.classList.add(this.turns.current);
+         this.removeOld();
+         const is = this.#isWin();
+         this.turns.current = this.turns.current == "x" ? "o" : "x";
+         !is && switchPlayer(this.turns.current);
+
+         const old = this.queue.add(e);
+         if (old) old.classList.add("t");
+      }
+   }
+
+   async #click(index) {
+      this.#move(index);
+      this.disable();
+      await wait(1000);
+      this.#aiTurn();
+      this.enable();
+   }
+
+   #addEvent() {
+      this.cells.forEach((e, i) => {
+         e.addEventListener("click", () => {
+            if (this.is && (this.isNotContent(e, ["x", "o"]) || this.start)) {
+               this.#click(i);
             }
          });
       });

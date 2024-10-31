@@ -1,5 +1,6 @@
 const onlineGame = new OnlineGame(options);
 const offlineGame = new OfflineGame(options);
+const aiGame = new AiGame(options);
 
 resetBtn.addEventListener("click", () => {
    switch (currentGameMode) {
@@ -9,6 +10,10 @@ resetBtn.addEventListener("click", () => {
       case "offline":
          winLoseWindow.classList.remove("active");
          offlineGame.reset();
+         break;
+      case "ai":
+         winLoseWindow.classList.remove("active");
+         aiGame.reset(difficulty);
          break;
    }
 });
@@ -25,24 +30,32 @@ function exitSetup() {
 exitBtn.addEventListener("click", () => {
    exitSetup();
 
-   switch (currentGameMode) {
-      case "online":
-         leaveTheGame();
-         break;
-      case "offline":
-         break;
+   if (currentGameMode === "online") {
+      leaveTheGame();
    }
 });
 
 function startOfflineGame() {
    currentGameMode = "offline";
    onlineGame.disable();
+   aiGame.disable();
    offlineGame.init();
 }
 
-function setupWinLoseStatus(name) {
+function startAiGame(difficulty) {
+   currentGameMode = "ai";
+   onlineGame.disable();
+   offlineGame.disable();
+   aiGame.init(difficulty);
+}
+
+function setupWinLoseStatus(name, isForAi = false) {
    winLoseWindow.classList.add("active");
-   winnerName.innerText = `${name === true ? "you are" : name + "'s"} Win!`;
+   if (isForAi) {
+      winnerName.innerHTML = name;
+   } else {
+      winnerName.innerText = `${name === true ? "you are" : name + "'s"} Win!`;
+   }
 }
 
 function switchPlayer(turn) {
@@ -56,9 +69,12 @@ function updateWinStatus(total, strike) {
    winStrikeO.innerText = `🏅 ${strike.o}`;
 }
 
-function setupPlayerNames(nameX = "Player X", nameO = "Player O") {
-   PLAYER_X.textContent = nameX;
-   PLAYER_O.textContent = nameO;
-   NAME_X.textContent = nameX;
-   NAME_O.textContent = nameO;
+function setupPlayerNames(nameX = "Player X", nameO = "Player O", isForAi = false) {
+   if (isForAi) {
+      PLAYER_X.innerHTML = NAME_X.innerHTML = nameX;
+      PLAYER_O.innerHTML = NAME_O.innerHTML = nameO;
+   } else {
+      PLAYER_X.textContent = NAME_X.textContent = nameX;
+      PLAYER_O.textContent = NAME_O.textContent = nameO;
+   }
 }

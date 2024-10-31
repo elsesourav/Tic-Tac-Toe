@@ -102,8 +102,10 @@ header section .name {
    position: relative;
    width: 100%;
    max-width: calc(var(--s) * 0.16);
-   display: grid;
-   place-items: center;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   font-weight: 600;
    height: 90%;
    border-radius: 6px;
    background: #0002;
